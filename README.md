@@ -13,6 +13,9 @@ inference.py code in Building Detection folder can detect building and make boun
 2. Distance Prediction to Buildings
 ![화면 캡처 2024-08-06 143631](https://github.com/user-attachments/assets/d55c6042-27ee-4349-9f28-7f670fc149b0)
 
+DPT github: [https://github.com/isl-org/DPT](https://github.com/isl-org/DPT)
+download pretrained weight(dpt_hybrid-midas-501f0c75.pt)
+
 3. Calculation of Building GPS Coordinates Using Vehicle GPS Information and Distance Data
 
 4. Providing Detailed Information on Buildings by Connecting with GS1 GEO Data
