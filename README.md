@@ -29,7 +29,8 @@ download pretrained weight(dpt_hybrid-midas-501f0c75.pt)
 ![화면 캡처 2024-08-28 163025](https://github.com/user-attachments/assets/bea89d76-5c94-4e38-8550-bdd6a318d599)
 
 
-![화면 캡처 2024-08-28 162839](https://github.com/user-attachments/assets/a4368bdc-6322-4396-b385-68a50ab5e7d8)
+![화면 캡처 2024-08-28 162839](https://github.com/user-attachments/assets/d7c1f760-76f4-4d1c-a4a5-e1e01f926b9e)
+
 
 
 ## 4. Providing Detailed Information on Buildings by Connecting with GS1 GEO Data
