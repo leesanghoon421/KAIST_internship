@@ -8,7 +8,10 @@ run zed_record.py -> zed x mini gets image and reference point
 
 run data_connect.py -> can get result
 
-# This project is divided into four main stages:
+# Project Flow
+
+![그림1](https://github.com/user-attachments/assets/e88dbe8b-729d-4813-aadc-83634a538970)
+
 
 ## 1. Building Detection
 ![화면 캡처 2024-08-06 143038](https://github.com/user-attachments/assets/1a64bdeb-996a-4b28-a091-2dae6ff42c32)
