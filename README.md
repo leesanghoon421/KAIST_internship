@@ -18,7 +18,9 @@ download pretrained weight(dpt_hybrid-midas-501f0c75.pt)
 
 ## 3. Calculation of Building GPS Coordinates Using Vehicle GPS Information and Distance Data
 
+![distance_test](https://github.com/user-attachments/assets/2aae5f23-622a-49fb-99cc-2c7be4d896b6)
 
+reference point: 5m point
 
 ## 4. Providing Detailed Information on Buildings by Connecting with GS1 GEO Data
 
