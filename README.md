@@ -3,6 +3,10 @@ Retrieving Info of Building by Building detection, Long distance estimation, GS1
 
 This project is part of AILEE 2025 - City Sensing AI projects v2
 
+##Simple program running
+run zed_record.py -> zed x mini gets image and reference point
+run data_connect.py -> can get result
+
 This project is divided into four main stages:
 
 ## 1. Building Detection
