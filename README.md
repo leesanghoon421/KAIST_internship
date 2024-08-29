@@ -49,7 +49,7 @@ download pretrained weight(dpt_hybrid-midas-501f0c75.pt)
 reference point를 조절하는 방법은 zed_record.py 코드에서 reference_point 변수를 바꾸고 (mm단위) distance_specify.py 코드에서 reference_distance를 수정해야합니다. 이때 (reference_distance)^3 = reference_point 조건을 만족시키도록 수정해야합니다.
 
 예를들어 reference_point를 5미터로 한다면 1.7의 세제곱이 약 5이므로 referece_distance를 1.7로 바꿔주어야 합니다.
-
+(우선 카메라 각도 문제로 zed x mini가 5미터보다 먼지점을 5미터로 예측하는 문제가 있어서 zed x mini가 지정해준 5미터 지점을 15미터로 간주하여 reference_point = 5 meter, referece_distance = 2.5로 지정하였습니다. 추후에 카메라가 좀더 적절하게 설치된다면 다시 테스트 해보시길 바랍니다.)
 
 다음으로 data_connect.py 코드를 실행시켜 결과를 보기 전에 모든 이미지와 중간 저장 데이터들이 담기는 폴더들을 비우고 진행하시는 것을 추천드립니다.
 
