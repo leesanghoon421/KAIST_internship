@@ -39,7 +39,7 @@ os.makedirs(record_dir, exist_ok=True)
 image = sl.Mat()
 point_cloud = sl.Mat()
 
-reference_point = 5000
+reference_point=5000
 
 def clear_previous_files(directory):
     """Delete all files in the specified directory."""
@@ -66,6 +66,9 @@ def capture_image_and_point():
         frame = cv2.resize(frame, (1920, 1200))
         frame = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
+        # Flip the image both vertically and horizontally
+        frame = cv2.flip(frame, -1)
+
         # Save the RGB image
         now = datetime.now()
         formatted_time = now.strftime("%d_%m_%Y_%H_%M_%S_%f")
@@ -81,7 +84,7 @@ def capture_image_and_point():
             _, (rel_x, rel_y, rel_z, _) = point_cloud.get_value(center_x, y)
             if math.isfinite(rel_x) and math.isfinite(rel_y) and math.isfinite(rel_z):
                 depth_value = math.sqrt(rel_x**2 + rel_y**2 + rel_z**2)
-                if abs(depth_value - reference_point) < 50:  # Check if the depth is close to 5m
+                if abs(depth_value - reference_point) < 500:  # Check if the depth is close to 5m
                     found_point = True
                     selected_x, selected_y = center_x, y
                     break
