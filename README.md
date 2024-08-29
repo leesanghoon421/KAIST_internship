@@ -37,3 +37,13 @@ download pretrained weight(dpt_hybrid-midas-501f0c75.pt)
 
 ![화면 캡처 2024-08-28 163118](https://github.com/user-attachments/assets/87d6b704-676a-4389-be01-3ea302553df5)
 
+
+
+
+
+AILEE 차량 테스트를 위한 정보
+
+기본적으로는 simple program running에 따라 zed_record를 실행하면 이미지와 reference point를 저장합니다.
+이때 현재 reference point는 5m지점으로 되어있지만 차량에서 테스트를 진행해보며 너무 가깝게 예측하는 경우 reference point를 줄이고 너무 멀게 예측하는경우 reference point를 늘려야합니다.
+
+reference point를 조절하는 방법은 zed_record 파일에서 reference_point 변수를 바꾸고 (mm단위)
