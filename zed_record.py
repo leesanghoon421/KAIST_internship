@@ -39,6 +39,8 @@ os.makedirs(record_dir, exist_ok=True)
 image = sl.Mat()
 point_cloud = sl.Mat()
 
+reference_point = 5000
+
 def clear_previous_files(directory):
     """Delete all files in the specified directory."""
     files = os.listdir(directory)
@@ -79,7 +81,7 @@ def capture_image_and_point():
             _, (rel_x, rel_y, rel_z, _) = point_cloud.get_value(center_x, y)
             if math.isfinite(rel_x) and math.isfinite(rel_y) and math.isfinite(rel_z):
                 depth_value = math.sqrt(rel_x**2 + rel_y**2 + rel_z**2)
-                if abs(depth_value - 5000) < 50:  # Check if the depth is close to 5m
+                if abs(depth_value - reference_point) < 50:  # Check if the depth is close to 5m
                     found_point = True
                     selected_x, selected_y = center_x, y
                     break
