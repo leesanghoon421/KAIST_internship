@@ -1,7 +1,11 @@
+import cv2
 import subprocess
 import ast
 import requests
+import glob
+import os
 from geopy.distance import geodesic
+from PIL import Image, ImageDraw, ImageFont
 
 # gps_est.py 스크립트를 실행하고 출력을 캡처
 print("Running gps_est.py to get estimated GPS coordinates...\n")
@@ -115,3 +119,60 @@ for road_name, grouped_responses in road_name_groups.items():
 print("\nFinal results:")
 for result in final_results:
     print(f"Final GPS coordinate {result['index']}: Estimated - {result['gps_coordinate']}, Road Name - {result['road_name']}, Full Response - {result['raw_data']}")
+
+# 최종 결과 이미지 시각화
+print("\nVisualizing final results...")
+
+# `visualize` 폴더에 있는 이미지 파일 찾기
+visualize_images = glob.glob('visualize/*.png')
+if not visualize_images:
+    print("No images found in the visualize folder.")
+    exit(1)
+
+# 최종 시각화 이미지 폴더 설정
+final_visualize_folder = 'final_visualize'
+os.makedirs(final_visualize_folder, exist_ok=True)
+
+# 한글 폰트를 사용할 수 있도록 PIL을 통해 글꼴 설정
+font_path = "/usr/share/fonts/opentype/noto/NotoSerifCJK-Regular.ttc"  # 시스템에 설치된 폰트 경로
+font = ImageFont.truetype(font_path, 20)
+
+# 각 시각화된 이미지에 텍스트 추가
+for result in final_results:
+    gps_coord = result['gps_coordinate']
+    road_name = result['road_name']
+    sgln = result['raw_data']['data'].get('sgln', 'N/A')  # SGLN 정보가 없는 경우 'N/A'로 대체
+    index = result['index']
+
+    img_path = visualize_images[index - 1]  # 인덱스에 해당하는 이미지 선택
+    img = Image.open(img_path)
+    draw = ImageDraw.Draw(img)
+    
+    # 바운딩 박스 정보 가져오기
+    bbox_file_path = 'upgradebb_output/new_result.txt'
+    with open(bbox_file_path, 'r') as f:
+        lines = f.readlines()
+        for line in lines:
+            bbox_data = line.strip().split()
+            if len(bbox_data) < 6:
+                print(f"Warning: Expected at least 6 values but got {len(bbox_data)}: {bbox_data}")
+                continue
+
+            # 첫 번째 클래스 요소는 무시하고 나머지 요소만 사용
+            conf, x_min, y_min, x_max, y_max = map(float, bbox_data[1:])
+            
+            # 이미지 위에 텍스트 추가 (각 정보 한 줄씩)
+            text_1 = f"GPS: {gps_coord}"
+            text_2 = f"Road: {road_name}"
+            text_3 = f"SGLN: {sgln}"
+            text_position = (int(x_min * img.width), max(int(y_min * img.height) - 30, 20))  # 텍스트가 이미지 바깥으로 나가지 않도록 최소 20 픽셀 유지
+
+            # 검정색 텍스트로 추가
+            draw.text(text_position, text_1, font=font, fill=(0, 0, 0))
+            draw.text((text_position[0], text_position[1] + 20), text_2, font=font, fill=(0, 0, 0))
+            draw.text((text_position[0], text_position[1] + 40), text_3, font=font, fill=(0, 0, 0))
+
+    # 최종 결과 이미지를 final_visualize 폴더에 저장
+    final_image_path = os.path.join(final_visualize_folder, f'final_result_visualized_{index}.png')
+    img.save(final_image_path)
+    print(f"Final result image saved to {final_image_path}")
