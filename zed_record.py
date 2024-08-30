@@ -39,7 +39,7 @@ os.makedirs(record_dir, exist_ok=True)
 image = sl.Mat()
 point_cloud = sl.Mat()
 
-reference_point=5000
+reference_point = 5000
 
 def clear_previous_files(directory):
     """Delete all files in the specified directory."""
@@ -69,6 +69,9 @@ def capture_image_and_point():
         # Flip the image both vertically and horizontally
         frame = cv2.flip(frame, -1)
 
+        # Remove the bottom 100 pixels
+        frame = frame[:1100, :]
+
         # Save the RGB image
         now = datetime.now()
         formatted_time = now.strftime("%d_%m_%Y_%H_%M_%S_%f")
@@ -91,6 +94,8 @@ def capture_image_and_point():
 
         # Save the coordinates if a 5m point was found
         if found_point:
+            # Adjust y-coordinate to account for the 100 pixels cut off
+            selected_y = min(selected_y, 1100)
             print(f"5미터 지점 발견: 좌표 ({selected_x}, {selected_y})")
             coordinates_file = os.path.join(record_dir, filename_str.replace('.jpg', '.txt'))
             with open(coordinates_file, 'w') as file:
