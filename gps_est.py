@@ -26,11 +26,10 @@ def load_pfm(file_path):
         
         return np.reshape(data, shape), scale
 
-def calculate_absolute_distance(depth_map, ref_distance):
+def calculate_absolute_distance(depth_map, ref_distance, ref_point):
     height, width = depth_map.shape[:2]
 
-    ref_point = (width // 2, height // 6)
-
+    # Use the provided reference point
     ref_depth_value = depth_map[ref_point[1], ref_point[0]]
     max_depth_value = np.max(depth_map)
 
@@ -95,13 +94,34 @@ def run_monodepth_and_get_latest_pfm(pfm_folder_path):
 
     return latest_pfm_file
 
+def get_latest_reference_point(record_dir):
+    txt_files = [f for f in glob.glob(os.path.join(record_dir, '*.txt')) if f.endswith('.txt')]
+    if not txt_files:
+        print(f"참조 지점을 찾을 수 없습니다: {record_dir}")
+        return None
 
-def predict_detection_points_gps(detection_script_path, pfm_folder_path, current_gps, heading, ref_distance, FOV):
+    latest_txt_file = max(txt_files, key=os.path.getctime)
+    print(f"가장 최근에 생성된 텍스트 파일: {latest_txt_file}")
+
+    with open(latest_txt_file, 'r') as file:
+        line = file.readline()
+        match = re.search(r"5m point at \((\d+), (\d+)\)", line)
+        if match:
+            reference_x, reference_y = map(int, match.groups())
+            return (reference_x, reference_y)
+    return None
+
+def predict_detection_points_gps(detection_script_path, pfm_folder_path, record_dir, current_gps, heading, ref_distance, FOV):
+    ref_point = get_latest_reference_point(record_dir)
+    if ref_point is None:
+        print("참조 지점을 찾을 수 없습니다.")
+        return []
+
     pfm_file_path = run_monodepth_and_get_latest_pfm(pfm_folder_path)
     depth_map, scale = load_pfm(pfm_file_path)
     height, width = depth_map.shape[:2]
 
-    absolute_distances = calculate_absolute_distance(depth_map, ref_distance)
+    absolute_distances = calculate_absolute_distance(depth_map, ref_distance, ref_point)
 
     detection_points = run_detection_script(detection_script_path)
 
@@ -118,14 +138,15 @@ def predict_detection_points_gps(detection_script_path, pfm_folder_path, current
     return predicted_gps_points
 
 # 예제 사용
-current_gps = (37.403213, 127.110499)  # 현재 GPS 위치 (위도, 경도)
-heading = 275  # 카메라의 현재 바라보는 방향 (서쪽 85도)
-reference_distance = 1.7  # 참조 지점의 실제 거리 (미터)
+current_gps = (36.370077, 127.379437)  # 현재 GPS 위치 (위도, 경도)
+heading = 180  # 카메라의 현재 바라보는 방향 (서쪽 85도)
+reference_distance = 2.5  # 참조 지점의 실제 거리 (미터)
 FOV = 72  # 화각 72도
 pfm_folder_path = './output_monodepth/'  # PFM 파일이 저장된 폴더 경로
 detection_script_path = './detection.py'  # detection.py 파일 경로
+record_dir = 'recording/images/'  # 텍스트 파일이 저장된 폴더 경로
 
-predicted_gps_points = predict_detection_points_gps(detection_script_path, pfm_folder_path, current_gps, heading, reference_distance, FOV)
+predicted_gps_points = predict_detection_points_gps(detection_script_path, pfm_folder_path, record_dir, current_gps, heading, reference_distance, FOV)
 
 # 결과 출력
 for i, (gps, angle, distance) in enumerate(predicted_gps_points):
